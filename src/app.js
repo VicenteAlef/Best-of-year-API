@@ -6,6 +6,7 @@ const { initDb } = require("./config/db");
 // Importar rotas
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 
 const app = express();
 
@@ -21,6 +22,7 @@ initDb().catch((err) => console.error("Erro ao iniciar DB:", err));
 // Usar Rotas
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
+app.use("/categories", categoryRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Melhores do Ano rodando...");
