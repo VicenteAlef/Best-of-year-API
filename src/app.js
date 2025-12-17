@@ -7,6 +7,7 @@ const { initDb } = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
+const voteRoutes = require("./routes/voteRoutes");
 
 const app = express();
 
@@ -23,6 +24,7 @@ initDb().catch((err) => console.error("Erro ao iniciar DB:", err));
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/categories", categoryRoutes);
+app.use("/votes", voteRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Melhores do Ano rodando...");

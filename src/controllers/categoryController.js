@@ -50,7 +50,8 @@ exports.listCategories = async (req, res) => {
       // Se houver um usuário vinculado (pode ser null se a categoria estiver vazia)
       if (row.user_id) {
         categoriesMap.get(row.category_id).nominees.push({
-          id: row.user_id,
+          nominee_id: row.nominee_id, // <--- ADICIONE NA QUERY E AQUI
+          user_id: row.user_id,
           name: row.user_name,
           photo: row.photo_path,
         });
