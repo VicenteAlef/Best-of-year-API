@@ -17,13 +17,17 @@ exports.createCategory = async (req, res) => {
 };
 
 // Listar Categorias com seus Candidatos (Formato ideal para o Frontend)
+// ... (outros imports e funções)
+
+// Listar Categorias com seus Candidatos (CORRIGIDO)
 exports.listCategories = async (req, res) => {
   try {
     const db = await openDb();
 
-    // Buscamos Categorias + Dados dos Usuários indicados (JOIN)
+    // ATENÇÃO: Adicionamos 'n.id as nominee_id' na primeira linha do SELECT
     const rows = await db.all(`
       SELECT 
+        n.id as nominee_id,
         c.id as category_id, 
         c.title as category_title,
         u.id as user_id, 
@@ -34,8 +38,6 @@ exports.listCategories = async (req, res) => {
       LEFT JOIN users u ON n.user_id = u.id
     `);
 
-    // O banco retorna uma lista plana. Vamos agrupar por categoria no Javascript.
-    // Estrutura final: [ { id, title, nominees: [ {user...}, {user...} ] } ]
     const categoriesMap = new Map();
 
     rows.forEach((row) => {
@@ -47,10 +49,9 @@ exports.listCategories = async (req, res) => {
         });
       }
 
-      // Se houver um usuário vinculado (pode ser null se a categoria estiver vazia)
       if (row.user_id) {
         categoriesMap.get(row.category_id).nominees.push({
-          nominee_id: row.nominee_id, // <--- ADICIONE NA QUERY E AQUI
+          nominee_id: row.nominee_id, // <--- O FRONTEND PRECISA DISTO AQUI
           user_id: row.user_id,
           name: row.user_name,
           photo: row.photo_path,
@@ -58,7 +59,6 @@ exports.listCategories = async (req, res) => {
       }
     });
 
-    // Converte o Map de volta para Array
     const result = Array.from(categoriesMap.values());
     res.json(result);
   } catch (error) {
