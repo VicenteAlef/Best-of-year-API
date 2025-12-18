@@ -34,6 +34,7 @@ async function initDb() {
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL
+      description TEXT 
     )
   `);
 

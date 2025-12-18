@@ -2,14 +2,22 @@ const { openDb } = require("../config/db");
 
 // Criar Categoria
 exports.createCategory = async (req, res) => {
-  const { title } = req.body;
+  const { title, description } = req.body; // <--- Recebe a descrição
 
-  if (!title)
-    return res.status(400).json({ message: "O título é obrigatório." });
+  if (!title) {
+    return res
+      .status(400)
+      .json({ message: "O título da categoria é obrigatório." });
+  }
 
   try {
     const db = await openDb();
-    await db.run("INSERT INTO categories (title) VALUES (?)", [title]);
+    // Insere título E descrição
+    await db.run("INSERT INTO categories (title, description) VALUES (?, ?)", [
+      title,
+      description,
+    ]);
+
     res.status(201).json({ message: "Categoria criada com sucesso." });
   } catch (error) {
     res.status(500).json({ message: "Erro ao criar categoria." });
