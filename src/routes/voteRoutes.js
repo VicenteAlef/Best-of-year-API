@@ -8,5 +8,6 @@ router.post("/", verifyToken, voteController.registerVote);
 
 // Rota de Resultados (Apenas Admin)
 router.get("/results", verifyToken, isAdmin, voteController.getResults);
+router.post("/reset", verifyToken, isAdmin, voteController.resetVotes);
 
 module.exports = router;

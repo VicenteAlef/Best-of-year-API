@@ -93,3 +93,24 @@ exports.getResults = async (req, res) => {
     res.status(500).json({ message: "Erro ao obter resultados." });
   }
 };
+
+// Resetar Votação (Para novo concurso)
+exports.resetVotes = async (req, res) => {
+  try {
+    const db = await openDb();
+
+    // 1. Apagar todos os votos registados
+    await db.run("DELETE FROM votes");
+
+    // 2. Resetar o status de "já votou" de TODOS os utilizadores
+    await db.run("UPDATE users SET voted = 0");
+
+    res.json({
+      message:
+        "Sistema de votação resetado com sucesso! Um novo concurso foi iniciado.",
+    });
+  } catch (error) {
+    console.error("Erro ao resetar votos:", error);
+    res.status(500).json({ message: "Erro ao resetar votação." });
+  }
+};
