@@ -24,20 +24,18 @@ exports.createCategory = async (req, res) => {
   }
 };
 
-// Listar Categorias com seus Candidatos (Formato ideal para o Frontend)
-// ... (outros imports e funções)
-
-// Listar Categorias com seus Candidatos (CORRIGIDO)
+// Listar Categorias com seus Candidatos (ATUALIZADO COM DESCRIÇÃO)
 exports.listCategories = async (req, res) => {
   try {
     const db = await openDb();
 
-    // ATENÇÃO: Adicionamos 'n.id as nominee_id' na primeira linha do SELECT
+    // 1. Buscamos agora também a descrição (c.description)
     const rows = await db.all(`
       SELECT 
         n.id as nominee_id,
         c.id as category_id, 
         c.title as category_title,
+        c.description as category_description, 
         u.id as user_id, 
         u.name as user_name, 
         u.photo_path
@@ -53,13 +51,14 @@ exports.listCategories = async (req, res) => {
         categoriesMap.set(row.category_id, {
           id: row.category_id,
           title: row.category_title,
+          description: row.category_description, // <--- ADICIONADO AQUI
           nominees: [],
         });
       }
 
       if (row.user_id) {
         categoriesMap.get(row.category_id).nominees.push({
-          nominee_id: row.nominee_id, // <--- O FRONTEND PRECISA DISTO AQUI
+          nominee_id: row.nominee_id,
           user_id: row.user_id,
           name: row.user_name,
           photo: row.photo_path,

@@ -33,7 +33,7 @@ async function initDb() {
   await db.exec(`
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL
+      title TEXT NOT NULL,
       description TEXT 
     )
   `);
