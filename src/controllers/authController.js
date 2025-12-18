@@ -52,3 +52,30 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: "Erro interno no servidor." });
   }
 };
+
+exports.getMe = async (req, res) => {
+  try {
+    const db = await openDb();
+    const user = await db.get(
+      "SELECT id, name, email, role, photo_path, voted FROM users WHERE id = ?",
+      [req.user.id]
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+
+    // Garante que o formato seja igual ao do login
+    res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      photo_path: user.photo_path,
+      voted: user.voted === 1, // Converte 1/0 para true/false
+    });
+  } catch (error) {
+    console.error("Erro ao buscar perfil:", error);
+    res.status(500).json({ message: "Erro ao buscar dados do usuário." });
+  }
+};
